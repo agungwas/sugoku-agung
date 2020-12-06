@@ -39,9 +39,6 @@ export function validate (play) {
             if (play[rowIndex][colIndex] !== colVal) falseInput.push([rowIndex, colIndex])
           })
         })
-        console.log('\r\n\r\n', JSON.stringify(response.solution), 'dari solution');
-        console.log(JSON.stringify(falseInput), 'dari false input');
-        
         if (falseInput.length === 0) dispatch({ type: 'SUCCESS' })
         else dispatch({ type: 'VALIDATE BOARD', falseInput })
       })
@@ -77,8 +74,6 @@ function reducer(state = initState, action) {
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, /* preloadedState, */ composeEnhancers(
-    applyMiddleware(thunk)
-  ));
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 
 export default store

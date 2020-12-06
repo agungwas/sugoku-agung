@@ -1,12 +1,12 @@
-import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getBoard, validate } from '../store';
 
 export default function Home (props) {
-  const dispatch = useDispatch()
   const { loading, board, falseInput, success } = useSelector(s => s)
   const [play, setPlay] = useState(board)
+  const dispatch = useDispatch()
 
   useEffect(_=> dispatch(getBoard(props.route.params.level)), [])
   useEffect(_=> setPlay(board), [loading])
