@@ -12,14 +12,16 @@ export default function Home (props) {
   useEffect(_=> setPlay(board), [loading])
   useEffect(_=> {
     const { name, level } = props.route.params
-    if (!success) console.log(falseInput);
-    else props.navigation.push('Result', { name, level })
+    if (success) {
+      props.navigation.push('Result', { name, level })
+      dispatch({ type: 'ADD WINNER', data: { name, level } })
+    }
   }, [success])
 
   const otherBoard = _=> dispatch(getBoard(props.route.params.level))
   const backtohome = () => {
-    props.navigation.navigate('Sugoku by Agung Setya Pratama')
     dispatch({ type: 'RESET GAME'})
+    props.navigation.navigate('Sugoku by Agung Setya Pratama')
   }
 
   const handleInput = (val, rowIndex, colIndex) => {

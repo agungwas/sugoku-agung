@@ -48,7 +48,7 @@ export function validate (play) {
   }
 }
 
-const initState = { board: [], loading: false, falseInput: [], success: false, boardClear: [] }
+const initState = { board: [], loading: false, falseInput: [], success: false, boardClear: [], winner: [] }
 
 function reducer(state = initState, action) {
   switch (action.type) {
@@ -68,6 +68,9 @@ function reducer(state = initState, action) {
       return { ...state, boardClear: [ ...action.data] }
     case 'RESET GAME':
       return { ...state, falseInput: [], success: false }
+    case 'ADD WINNER':
+      const { name, level } = action.data
+      return { ...state, winner: [ ...state.winner, { name, level} ]}
     default:
       break;
   }

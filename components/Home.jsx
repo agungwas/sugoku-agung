@@ -2,17 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Text, TextInput, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import { useDispatch } from 'react-redux';
 
 export default function Home (props) {
   const [name, setName] = useState('')
   const [level, setLevel] = useState('')
   const [error, setError] = useState(false)
   const [errMsg, setErrmsg] = useState('')
-  
-  // useEffect(() => {
-  //   setName('')
-  //   setLevel('')
-  // }, [])
 
   const customButton = () => {
     if (!name || !level) setError(true)
@@ -20,11 +16,11 @@ export default function Home (props) {
     else if (!name) setErrmsg('Name is required')
     else if (!level) setErrmsg('Level is required')
     else {
-      console.log('sampai sini');
       setName('')
       setLevel('')
       props.navigation.push('Game', { name, level })
-      // props.navigation.push('Game', { name, level })
+
+      // props.navigation.push('Result', { name, level })
     }
   }
   const closeModal = () => setError(false)
