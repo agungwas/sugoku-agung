@@ -1,71 +1,64 @@
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getBoard, validate } from '../store';
 
 export default function Home (props) {
-  const [board, setBoard] = useState([])
-  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const { loading, board, falseInput, success } = useSelector(s => s)
+  const [play, setPlay] = useState(board)
 
+  useEffect(_=> dispatch(getBoard(props.route.params.level)), [])
+  useEffect(_=> setPlay(board), [loading])
   useEffect(_=> {
-    setLoading(true)
-    fetch('https://sugoku.herokuapp.com/board?difficulty=easy')
-      .then(res => res.json())
-      .then(data => {
-        setBoard(data.board)
-      })
-      .finally(_=> setLoading(false))
-  }, [])
+    const { name, level } = props.route.params
+    if (!success) console.log(falseInput);
+    else props.navigation.navigate('Result', { name, level })
+  }, [success])
+
+  const otherBoard = _=> dispatch(getBoard(props.route.params.level))
+  const backtohome = () => {
+    props.navigation.navigate('Sugoku by Agung Setya Pratama')
+    dispatch({ type: 'RESET GAME'})
+  }
 
   const handleInput = (val, rowIndex, colIndex) => {
-    board[rowIndex][colIndex] = +val
-    setBoard(board)
+    play[rowIndex][colIndex] = +val
+    setPlay(play)
   }
 
-  const handleValidate = () => {
-    const encodeBoard = (board) => board.reduce((result, row, i) => result + `%5B${encodeURIComponent(row)}%5D${i === board.length -1 ? '' : '%2C'}`, '')
-    const encodeParams = (params) => 
-      Object.keys(params)
-      .map(key => key + '=' + `%5B${encodeBoard(params[key])}%5D`)
-      .join('&');
+  const handleValidate = () => dispatch(validate(play))
 
-    fetch('https://sugoku.herokuapp.com/solve', {
-      method: 'POST',
-      body: encodeParams({board}),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    })
-      .then(response => response.json())
-      .then(response => {
-        let salah = 0
-        response.solution.forEach((rowVal, rowIndex) => {
-          rowVal.forEach((colVal, colIndex) => {
-            if (board[rowIndex][colIndex] !== colVal) salah++
-          })
-        })
-        if (!salah) {
-          alert('selesai')
-          console.log('selesai');
-        }
-        else {
-          console.log(response.solution);
-          alert('semangat')
-          console.log('semangat');
-        }
-      })
-      .catch(console.warn)
-  }
-
-  if (loading) return <Text>Loading luur</Text>
+  if (loading) return <ActivityIndicator size='large' style={{ flex: 1, justifyContent: 'center' }} color='blue'></ActivityIndicator>
 
   return (
     <View style={styles.container}>
-      { board.map((el, rowIndex) => (
-        <View style={{ display: "flex", flexDirection: "row" }} key={rowIndex}>
-          {el.map((datum, colIndex) => {
-            if (datum !== 0) return <Text key={colIndex} style={styles.kotak}>{datum}</Text>
-            else return <TextInput onChangeText={(text) => handleInput(text, rowIndex, colIndex)} keyboardType="numeric" maxLength={1} key={colIndex} style={{ ...styles.kotak, fontWeight: "normal" }}></TextInput>
-          })}
-        </View>
-      ))}
+      <View style={{ marginBottom: 20 }}>
+        { play.map((el, rowIndex) => (
+          <View style={{ display: "flex", flexDirection: "row" }} key={rowIndex}>
+            {el.map((datum, colIndex) => {
+              if (falseInput.find(wrong => (wrong[0] === rowIndex && wrong[1] === colIndex)))
+                return (<TextInput
+                  onChangeText={(text) => handleInput(text, rowIndex, colIndex)}
+                  keyboardType="numeric"
+                  maxLength={1} key={colIndex}
+                  style={{ ...styles.kotak, fontWeight: "normal", backgroundColor: 'red' }}
+                  >{(play[rowIndex][colIndex] !== 0) && play[rowIndex][colIndex]}</TextInput>)
+              else if (play[rowIndex][colIndex] !== 0) return <Text key={colIndex} style={styles.kotak}>{datum}</Text>
+              else return <TextInput onChangeText={(text) => handleInput(text, rowIndex, colIndex)} keyboardType="numeric" maxLength={1} key={colIndex} style={{ ...styles.kotak, fontWeight: "normal" }}></TextInput>
+            })}
+          </View>
+        ))}
+      </View>
       <Button title="Validate" onPress={handleValidate} />
+      <View style={{ display: "flex", flexDirection: 'row', justifyContent: "space-around", marginTop: 80, width: 400 }}>
+        <TouchableOpacity onPress={otherBoard} style={{ ...styles.tombol, backgroundColor: 'green' }}>
+          <Text style={{ color: 'white' }}>Other Board</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={backtohome} style={{ ...styles.tombol, backgroundColor: 'blue' }}>
+          <Text style={{ color: 'white' }}>Back to Home</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 
@@ -81,11 +74,16 @@ const styles = StyleSheet.create({
   kotak: {
     borderColor: 'black',
     borderWidth: 1,
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     textAlignVertical: "center",
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold"
+  },
+  tombol: {
+    padding: 10,
+    backgroundColor: 'red',
+    borderRadius: 10
   }
 });
