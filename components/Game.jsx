@@ -13,7 +13,7 @@ export default function Home (props) {
   useEffect(_=> {
     const { name, level } = props.route.params
     if (!success) console.log(falseInput);
-    else props.navigation.navigate('Result', { name, level })
+    else props.navigation.push('Result', { name, level })
   }, [success])
 
   const otherBoard = _=> dispatch(getBoard(props.route.params.level))
@@ -33,6 +33,7 @@ export default function Home (props) {
 
   return (
     <View style={styles.container}>
+      <Text style={{ fontSize: 30, marginBottom: 20, textTransform: "capitalize" }}>Level: {props.route.params.level}</Text>
       <View style={{ marginBottom: 20 }}>
         { play.map((el, rowIndex) => (
           <View style={{ display: "flex", flexDirection: "row" }} key={rowIndex}>

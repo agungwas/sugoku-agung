@@ -39,6 +39,7 @@ export function validate (play) {
             if (play[rowIndex][colIndex] !== colVal) falseInput.push([rowIndex, colIndex])
           })
         })
+        console.log(JSON.stringify(response.solution));
         if (falseInput.length === 0) dispatch({ type: 'SUCCESS' })
         else dispatch({ type: 'VALIDATE BOARD', falseInput })
       })
