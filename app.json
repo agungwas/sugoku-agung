@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "sugoku",
-    "slug": "sugoku",
+    "slug": "sugokubyagungsetyapratama",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/download.png",
+    "icon": "./assets/favicon.png",
     "splash": {
       "image": "./assets/dora.png",
       "resizeMode": "contain"
@@ -26,6 +26,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/agungwas/sugoku.git"
   }
 }
