@@ -2,14 +2,24 @@ import { ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacit
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getBoard, validate } from '../store';
+import { Stopwatch } from 'react-native-stopwatch-timer';
 
 export default function Home (props) {
-  const { loading, board, falseInput, success } = useSelector(s => s)
+  const { loading, board, falseInput, success, time } = useSelector(s => s)
   const [play, setPlay] = useState(board)
+  const [penanda, setPenanda] = useState(false)
   const dispatch = useDispatch()
+  let waktu = 0
 
   useEffect(_=> dispatch(getBoard(props.route.params.level)), [])
-  useEffect(_=> setPlay(board), [loading])
+  
+  useEffect(_=> {
+    setPenanda(false)
+    setPlay(board)
+    waktu = time
+    if (!loading) setPenanda(true)
+  }, [loading])
+
   useEffect(_=> {
     const { name, level } = props.route.params
     if (success) {
@@ -19,6 +29,7 @@ export default function Home (props) {
   }, [success])
 
   const otherBoard = _=> dispatch(getBoard(props.route.params.level))
+  
   const backtohome = () => {
     dispatch({ type: 'RESET GAME'})
     props.navigation.navigate('Sugoku by Agung Setya Pratama')
@@ -26,15 +37,21 @@ export default function Home (props) {
 
   const handleInput = (val, rowIndex, colIndex) => {
     play[rowIndex][colIndex] = +val
-    setPlay(play)
+    setPlay(play) 
   }
 
-  const handleValidate = () => dispatch(validate(play))
+  const handleValidate = () => {
+    setPenanda(false)
+    dispatch({ type: 'SET TIME', data: waktu })
+    dispatch(validate(play))
+  } 
 
   if (loading) return <ActivityIndicator size='large' style={{ flex: 1, justifyContent: 'center' }} color='blue'></ActivityIndicator>
 
   return (
     <View style={styles.container}>
+      <Stopwatch start={penanda} startTime={time} getTime={t => waktu = t} options={options} ></Stopwatch>
+      {/* <Timer tambahWaktu={tambahWaktu} waktu={waktu}></Timer> */}
       <Text style={{ fontSize: 30, marginBottom: 20, textTransform: "capitalize" }}>Level: {props.route.params.level}</Text>
       <View style={{ marginBottom: 20 }}>
         { play.map((el, rowIndex) => (
@@ -65,6 +82,15 @@ export default function Home (props) {
     </View>
   )
 
+}
+
+const options = {
+  container: {
+
+  },
+  text: {
+
+  }
 }
 
 const styles = StyleSheet.create({

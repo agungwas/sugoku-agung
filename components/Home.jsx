@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Text, TextInput, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import { useDispatch } from 'react-redux';
 
 export default function Home (props) {
   const [name, setName] = useState('')
@@ -19,8 +18,6 @@ export default function Home (props) {
       setName('')
       setLevel('')
       props.navigation.push('Game', { name, level })
-
-      // props.navigation.push('Result', { name, level })
     }
   }
   const closeModal = () => setError(false)

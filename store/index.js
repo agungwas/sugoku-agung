@@ -48,7 +48,7 @@ export function validate (play) {
   }
 }
 
-const initState = { board: [], loading: false, falseInput: [], success: false, boardClear: [], winner: [] }
+const initState = { board: [], loading: false, falseInput: [], success: false, boardClear: [], winner: [], time: 0 }
 
 function reducer(state = initState, action) {
   switch (action.type) {
@@ -71,6 +71,12 @@ function reducer(state = initState, action) {
     case 'ADD WINNER':
       const { name, level } = action.data
       return { ...state, winner: [ ...state.winner, { name, level} ]}
+    case 'SET TIME': 
+      let time = action.data.split(':')
+      time = time[0] * time[1] * 60 + Number(time[2]) *1000
+      console.log(time);
+      console.log(typeof(time), "dari store");
+      return { ...state, time }
     default:
       break;
   }
