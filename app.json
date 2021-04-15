@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.pratamagung_.sugokubyagungsetyapratama"
     },
     "web": {
       "favicon": "./assets/favicon.png"
